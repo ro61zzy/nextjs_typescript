@@ -1,9 +1,20 @@
 import { Box, Typography, TextField, Button, Container } from "@mui/material";
 import styles from "../page.module.css";
-import GitHubIcon from "@mui/icons-material/GitHub";
+import SignInWithGithub from "../components/SignInWithGithub";
+import { authOptions } from "../utils/auth";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import SigInForm from "../components/SigInForm";
 
-export default function LoginPage() {
+
+export default async function LoginPage() {
 //we cannot use usesate here because this is a server component, so, to avoid hydration error, we brake the sign in to make a client component then call it here
+//so we get the session here to avoid user signing in twice
+const session = await getServerSession(authOptions)
+
+if (session){
+    return redirect ('/')
+}
 
   return (
     <main className={styles.main}>
@@ -28,40 +39,8 @@ export default function LoginPage() {
         >
           Authentication Required
         </Typography>
-        <TextField
-          label="Email"
-          variant="outlined"
-          sx={{ backgroundColor: "#fff" }}
-          //   value={email}
-          // onChange={(e) => setEmail(e.target.value)}
-          fullWidth
-        />
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: "#000",
-            p: "10px",
-          }}
-          //onClick={handleLogin}
-          fullWidth
-        >
-          Login with Email
-        </Button>
-        <Button
-          variant="contained"
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            backgroundColor: "azure",
-            color: "#000",
-            p: "10px",
-          }}
-          //onClick={handleLogin}
-          fullWidth
-        >
-          <Typography>Login with Github</Typography>
-          <GitHubIcon />
-        </Button>
+       <SigInForm />
+       <SignInWithGithub />
       </Box>
     </main>
   );
