@@ -4,29 +4,39 @@ import { Alert, Box, Button, TextField } from "@mui/material";
 import { signIn } from "next-auth/react";
 import React, { useState } from "react";
 
-const SigInForm = () => {
-  const [email, setEmail] = useState<null | string>(null);
+const SignInForm = () => {
+  const [email, setEmail] = useState("");
 
-  async function SignInWithEmail() {
-    const signInResult = await signIn("email", {
-      email: email,
-      callbackUrl: `${window.location.origin}`,
-      redirect: false,
-    });
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
-    if (!signInResult.ok) {
-      return <Alert>Didn't work</Alert>;
+  const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    try {
+      const signInResult = await signIn("email", {
+        email: email,
+        callbackUrl: `${window.location.origin}`,
+        redirect: false,
+      });
+
+      if (!signInResult.ok) {
+        setAlertMessage("Sign-in failed. Please try again.");
+      } else {
+        setAlertMessage("Check your email for a magic link.");
+      }
+    } catch (error) {
+      console.error("Sign-in error:", error);
+      setAlertMessage("An error occurred. Please try again later.");
     }
-
-    return <Alert>Check Your Email for a magic link</Alert>;
-  }
+  };
 
   return (
-    <form action={SignInWithEmail} style={{ width: "100%" }}>
+    <form onSubmit={handleSignIn} style={{ width: "100%" }}>
       <TextField
         label="Email"
         variant="outlined"
         sx={{ backgroundColor: "#fff" }}
+        value={email}
         onChange={(e) => setEmail(e.target.value)}
         fullWidth
       />
@@ -38,13 +48,21 @@ const SigInForm = () => {
           p: "10px",
           mt: "15px",
         }}
-        //onClick={handleLogin}
         fullWidth
       >
         Login with Email
       </Button>
+
+      {/* Display alert if alertMessage is set */}
+      {alertMessage && (
+        <Box mt={2}>
+          <Alert severity={alertMessage.includes("failed") ? "error" : "success"}>
+            {alertMessage}
+          </Alert>
+        </Box>
+      )}
     </form>
   );
 };
 
-export default SigInForm;
+export default SignInForm;
