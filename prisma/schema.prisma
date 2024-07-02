@@ -12,3 +12,49 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id           Int            @id @default(autoincrement())
+  email        String?        @unique
+  createdAt    DateTime       @default(now()) @map(name: "created_at")
+  updatedAt    DateTime       @updatedAt @map(name: "updated_at")
+  tasks        Task[]
+  Session      Session[]
+  VerificationToken VerificationToken[]
+
+  @@map(name: "users")
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  expiresAt DateTime
+  handle    String   @unique
+  userId    Int      @map("user_id")
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@map(name: "sessions")
+}
+
+model VerificationToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  expiresAt DateTime
+  handle    String   @unique
+  userId    Int?     @map("user_id")
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@map(name: "verifications")
+}
+
+model Task {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String?
+  completed   Boolean @default(false)
+  userId      Int     @map("user_id")
+  user        User?   @relation(fields: [userId], references: [id])
+}
