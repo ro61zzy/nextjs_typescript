@@ -16,7 +16,7 @@ const SigInForm = () => {
   }
 
   return (
-    <form style={{ width: "100%" }}>
+    <form action={SignInWithEmail} style={{ width: "100%" }}>
       <TextField
         label="Email"
         variant="outlined"
