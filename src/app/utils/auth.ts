@@ -1,9 +1,12 @@
 import { NextAuthOptions } from "next-auth"
+import { PrismaAdapter } from "@next-auth/prisma-adapter" //that works
+import prisma from "./db";
 import GitHubProvider from "next-auth/providers/github";
 import EmailProvider from "next-auth/providers/email";
 
-//allow login or sign up with email or github
 export const authOptions = {
+    adapter: PrismaAdapter(prisma) ,
+    //allow login or sign up with email or github
     providers:[
         GitHubProvider({
             clientId: process.env.GITHUB_ID as string,
