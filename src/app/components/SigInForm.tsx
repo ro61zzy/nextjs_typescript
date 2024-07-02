@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button, TextField } from "@mui/material";
+import { Alert, Box, Button, TextField } from "@mui/material";
 import { signIn } from "next-auth/react";
 import React, { useState } from "react";
 
@@ -13,6 +13,12 @@ const SigInForm = () => {
       callbackUrl: `${window.location.origin}`,
       redirect: false,
     });
+
+    if (!signInResult.ok) {
+      return <Alert>Didn't work</Alert>;
+    }
+
+    return <Alert>Check Your Email for a magic link</Alert>;
   }
 
   return (
@@ -20,7 +26,6 @@ const SigInForm = () => {
       <TextField
         label="Email"
         variant="outlined"
-        placeholder="rose@email.com"
         sx={{ backgroundColor: "#fff" }}
         onChange={(e) => setEmail(e.target.value)}
         fullWidth
