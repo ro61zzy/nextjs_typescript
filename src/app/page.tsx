@@ -4,6 +4,7 @@ import { authOptions } from "./utils/auth";
 import { Box, Button, Typography } from "@mui/material";
 import LogOutButton from "./components/LogOutButton";
 import Link from "next/link";
+import SignUpWithCredentials from "./components/SignUpWithCreadentials";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -23,8 +24,9 @@ export default async function Home() {
       ) : (
         <Box>
           <Typography sx={{ color: "#000", fontWeight: 600, fontSize: "20px" }}>
-            Please Log in
+            Please Sign Up
           </Typography>
+          <SignUpWithCredentials />
           <Button 
              sx={{
               display: "flex",
